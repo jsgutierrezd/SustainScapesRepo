@@ -7,24 +7,30 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## GitHub Documents
+## Summary
 
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+ForRichness and Richness datasets
 
-## Including Code
-
-You can include R code in the document as follows:
-
-```{r cars}
-summary(cars)
+```{r, message=F}
+library(tidyverse)
 ```
 
-## Including Plots
+```{r,message=FALSE}
+rich <- read_csv("Richness.csv")
+forrich <- read_csv("ForRichness.csv")
+final <- full_join(rich,forrich)
+```
+The median richness for all of the sites is `r median(final$Richness)`, from the year `r min(final$year)` to the year `r max(final$year)`
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Example of one table
+```{r}
+Summary <- final %>% 
+  dplyr::filter(!is.na(MajorHab)) %>% 
+  group_by(MajorHab) %>% 
+  summarise(MedianRichness=mean(Richness),
+            MaxRichness=max(Richness),
+            MinRichness=min(Richness))
+knitr::kable(Summary,digits=2,caption="Summary of number of species according to major habitats")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

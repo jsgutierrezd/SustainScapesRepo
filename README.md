@@ -1,33 +1,47 @@
 SustainScapesRepo
 ================
 
-## GitHub Documents
+## Summary
 
-This is an R Markdown format used for publishing markdown documents to
-GitHub. When you click the **Knit** button all R code chunks are run and
-a markdown file (.md) suitable for publishing to GitHub is generated.
-
-## Including Code
-
-You can include R code in the document as follows:
+ForRichness and Richness datasets
 
 ``` r
-summary(cars)
+library(tidyverse)
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+``` r
+rich <- read_csv("Richness.csv")
+forrich <- read_csv("ForRichness.csv")
+final <- full_join(rich,forrich)
+```
 
-## Including Plots
+The median richness for all of the sites is 7, from the year 2003 to the
+year 2015
 
-You can also embed plots, for example:
+## Example of one table
 
-![](README_files/figure-gfm/pressure-1.png)<!-- -->
+``` r
+Summary <- final %>% 
+  dplyr::filter(!is.na(MajorHab)) %>% 
+  group_by(MajorHab) %>% 
+  summarise(MedianRichness=mean(Richness),
+            MaxRichness=max(Richness),
+            MinRichness=min(Richness))
+knitr::kable(Summary,digits=2,caption="Summary of number of species according to major habitats")
+```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+| MajorHab | MedianRichness | MaxRichness | MinRichness |
+|---------:|---------------:|------------:|------------:|
+|       13 |           1.00 |           2 |           0 |
+|       21 |          12.40 |          21 |           3 |
+|       22 |          18.50 |          42 |           9 |
+|       40 |           9.53 |          32 |           2 |
+|       51 |          10.25 |          18 |           3 |
+|       62 |          13.94 |          33 |           0 |
+|       64 |          10.03 |          33 |           1 |
+|       71 |           7.87 |          22 |           1 |
+|       72 |           9.40 |          42 |           1 |
+|       91 |           1.50 |           2 |           1 |
+|       99 |           9.00 |          18 |           4 |
+
+Summary of number of species according to major habitats
